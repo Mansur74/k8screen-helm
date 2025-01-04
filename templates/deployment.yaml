@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8screen-backend
+  labels:
+    app: k8screen-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8screen-backend
+  template:
+    metadata:
+      labels:
+        app: k8screen-backend
+    spec:
+      containers:
+        - name: k8screen-backend
+          image: 'registry.gitlab.com/mansurcildir/reg/k8screen-backend:{{ .Values.imageHash }}'
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 5
+      imagePullSecrets:
+        - name: gitlab-registry-credentials
+
