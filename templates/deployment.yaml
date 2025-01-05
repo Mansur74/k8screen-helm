@@ -16,8 +16,44 @@ spec:
     spec:
       containers:
         - name: k8screen-backend
-          image: 'registry.gitlab.com/mansurcildir/reg/k8screen-backend:{{ .Values.imageHash }}'
+          image: 'registry.gitlab.com/mansurcildir/reg/k8screen-backend:{{ .Values.imageTag }}'
           imagePullPolicy: Always
+          env: 
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: k8screen-secrets
+                  key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: k8screen-secrets
+                  key: GOOGLE_CLIENT_SECRET
+            - name: K8SCREEN_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: host
+            - name: K8SCREEN_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: port
+            - name: K8SCREEN_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: username
+            - name: K8SCREEN_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
+            - name: K8SCREEN_DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: database
           ports:
             - containerPort: 8080
           livenessProbe:
